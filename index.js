@@ -2,7 +2,8 @@ const express = require("express")
 const mongoose  =require("mongoose")
 const cors=require("cors")
 const { userModel, AdminModel } = require("./modules/collection");
-const bcrypt = require("bcrypt")
+// const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const cookieParser = require("cookie-parser")
 const app = express()
@@ -15,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
-mongoose.connect("mongodb+srv://inzuff:inzu664422@cluster0.cicya.mongodb.net/CRUD")
+mongoose.connect("mongodb+srv://inzuff:inzu664422@cluster0.cicya.mongodb.net/CRUD?retryWrites=true&w=majority&appName=Cluster0")
 
 const verifyUser = (req,res,next) =>{
   const token = req.cookies.token
