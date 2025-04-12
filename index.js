@@ -9,11 +9,16 @@ const cookieParser = require("cookie-parser")
 const app = express()
 
 // Improved CORS configuration
+// Update your CORS configuration
 app.use(cors({
   origin: "https://counsellor-lovat.vercel.app",
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"]
-}))
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  // Added OPTIONS
+  allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token", "Origin", "Accept"]
+}));
+
+// Add this before your other routes to handle preflight requests
+app.options('*', cors());
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
