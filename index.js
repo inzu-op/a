@@ -69,7 +69,10 @@ app.get("/verify-token", (req, res) => {
 app.post("/", (req, res) => {
   res.send("hello");
 });
-
+app.get("/logout",(req,res)=>{
+  res.clearCookie("token")
+  return res.json({Status:"Success"})
+})
 app.post("/signup", (req, res) => {
   const { name, email, password } = req.body;
   bcrypt.hash(password, 10)
