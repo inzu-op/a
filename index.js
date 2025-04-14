@@ -2,22 +2,17 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 const { userModel, AdminModel } = require("./modules/collection");
-// const bcrypt = require("bcrypt")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const cookieParser = require("cookie-parser")
 const app = express()
-
-// Improved CORS configuration
-// Update your CORS configuration
 app.use(cors({
   origin: "https://counsellor-lovat.vercel.app",
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  // Added OPTIONS
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
   allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token", "Origin", "Accept"]
 }));
 
-// Add this before your other routes to handle preflight requests
 app.options('*', cors());
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
@@ -25,7 +20,7 @@ app.use(cookieParser())
 
 mongoose.connect("mongodb+srv://inzuff:inzu664422@cluster0.cicya.mongodb.net/CRUD?retryWrites=true&w=majority&appName=Cluster0")
 
-// Improved token verification middleware
+
 const verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
@@ -38,7 +33,7 @@ const verifyUser = (req, res, next) => {
     }
     
     if (decoded.role === "admin") {
-      req.user = decoded; // Store user info for later use
+      req.user = decoded;
       next();
     } else {
       return res.status(403).json({ message: "Not authorized. Admin access required." });
@@ -46,7 +41,6 @@ const verifyUser = (req, res, next) => {
   });
 }
 
-// New endpoint to verify token without requiring admin role
 app.get("/verify-token", (req, res) => {
   const token = req.cookies.token;
   if (!token) {
@@ -93,13 +87,12 @@ app.post("/login", (req, res) => {
           bcrypt.compare(password, user.password, (err, result) => {
             if (result) {
               const token = jwt.sign({ email: user.email, role: user.role }, "jwt-secret-key", { expiresIn: "1d" });
-              
-              // Set cookie with additional options for better cross-domain support
+          
               res.cookie("token", token, {
                 httpOnly: true,
-                secure: true, // For HTTPS
-                sameSite: 'none', // For cross-domain
-                maxAge: 24 * 60 * 60 * 1000 // 1 day
+                secure: true, 
+                sameSite: 'none', 
+                maxAge: 24 * 60 * 60 * 1000 
               });
               
               res.json({ Status: "success", role: user.role });
